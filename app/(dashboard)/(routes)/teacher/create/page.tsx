@@ -1,12 +1,12 @@
 "use client";
 
 import * as z from "zod";
+import axios, { AxiosError } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { titleSchema } from "@/util/validation/index";
-import { createCourse } from "@/server/course/create";
 
 import {
   Form,
@@ -32,19 +32,12 @@ const Create = () => {
 
   const { isSubmitting, isValid } = form.formState;
 
-  const onAction = (value: z.infer<typeof titleSchema>) => {
+  const onAction = async (values: z.infer<typeof titleSchema>) => {
     try {
-      createCourse(value).then((res) => {
-        if (res.success) {
-          toast.success("New course created successfully!");
-          // router.push(`/teacher/courses/${res.success.data.title}`);
-        }
-        if (res.error) {
-          toast.error(res.error);
-        }
-      });
-    } catch {
-      toast.error("Something went wrong!");
+      const response = await axios.post("/api/courses", values);
+      router.push(`/teacher/courses/${response.data.id}`);
+    } catch (err: any) {
+      toast.error(err.response.data || "Something went wrong!");
     }
   };
 

@@ -1,6 +1,11 @@
 import { Button, buttonVariants } from "@/components/ui/button";
+import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 
 export default function Home() {
-  return <main>Hello world</main>;
+  return (
+    <main>
+      <UserButton afterSignOutUrl="/" />
+    </main>
+  );
 }

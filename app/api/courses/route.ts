@@ -1,6 +1,5 @@
-import * as z from "zod";
 import { NextRequest, NextResponse } from "next/server";
-import { titleSchema } from "@/util/validation";
+import { titleSchema } from "@/utils/validation";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 

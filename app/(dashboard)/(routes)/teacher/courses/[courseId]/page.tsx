@@ -2,7 +2,9 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-import TitleForm from "./_components/title-form";
+import TitleForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/title-form";
+import DescriptionForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/description-form";
+import ImageForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/image-form";
 
 import { LayoutDashboard } from "lucide-react";
 import { IconBadge } from "@/components/icon-badge";
@@ -54,6 +56,8 @@ const CourserIdPage = async ({ params }: ICourseId) => {
           </div>
 
           <TitleForm initialData={course} courseId={course.id} />
+          <DescriptionForm initialData={course} courseId={course.id} />
+          <ImageForm initialData={course} courseId={course.id} />
         </div>
       </div>
     </div>

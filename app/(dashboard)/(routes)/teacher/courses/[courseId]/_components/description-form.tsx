@@ -3,8 +3,9 @@
 import axios from "axios";
 import * as z from "zod";
 
+import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
-import { titleSchema } from "@/utils/validation";
+import { descriptionSchema } from "@/utils/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { type Course } from "@prisma/client";
@@ -22,30 +23,32 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-interface TitleFormProps {
+interface DescriptionFormProps {
   initialData: Course;
   courseId: string;
 }
 
-const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
+const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   const router = useRouter();
   const [isEditting, setIsEditting] = useState<boolean>(false);
 
   const toggleEdit = () => setIsEditting((prev) => !prev);
 
-  const form = useForm<z.infer<typeof titleSchema>>({
-    resolver: zodResolver(titleSchema),
-    defaultValues: initialData,
+  const form = useForm<z.infer<typeof descriptionSchema>>({
+    resolver: zodResolver(descriptionSchema),
+    defaultValues: {
+      description: initialData?.description || "",
+    },
   });
 
   const { isSubmitting, isValid } = form.formState;
 
-  const onSubmit = async (value: z.infer<typeof titleSchema>) => {
+  const onSubmit = async (value: z.infer<typeof descriptionSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, value);
       toggleEdit();
       router.refresh();
-      toast.success("Course title updated.");
+      toast.success("Course description updated.");
     } catch (err: any) {
       toast.error(err.response.data || "Something went wrong!");
     }
@@ -54,20 +57,29 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
   return (
     <div className="mt-6 border p-4 rounded-md bg-slate-100">
       <div className="font-medium flex items-center justify-between">
-        Course title
+        Course Description
         <Button onClick={toggleEdit} variant="ghost">
           {isEditting ? (
             <>Cancel</>
           ) : (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Edit title
+              Edit description
             </>
           )}
         </Button>
       </div>
 
-      {!isEditting && <p>{initialData.title}</p>}
+      {!isEditting && (
+        <p
+          className={cn(
+            "text-sm mt-2",
+            !initialData.description && "italic text-slate-500"
+          )}
+        >
+          {initialData.description || "No description"}
+        </p>
+      )}
       {isEditting && (
         <Form {...form}>
           <form
@@ -75,7 +87,7 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
             className="space-y-4 mt-4"
           >
             <FormField
-              name="title"
+              name="description"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
@@ -83,7 +95,7 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
                     <Input
                       {...field}
                       disabled={isSubmitting}
-                      placeholder="e.g. 'Advanced web developement'"
+                      placeholder="e.g. 'This course is about...'"
                     />
                   </FormControl>
                   <FormMessage />
@@ -102,4 +114,4 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
   );
 };
 
-export default TitleForm;
+export default DescriptionForm;

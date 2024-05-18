@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { titleSchema } from "@/util/validation";
+import { titleSchema } from "@/utils/validation";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -12,18 +12,11 @@ interface IParams {
 export async function PATCH(req: Request, { params: { courseId } }: IParams) {
   try {
     const { userId } = auth();
-    const data = await req.json();
-    const validatedValue = titleSchema.safeParse(data);
+    const values = await req.json();
 
     if (!userId) {
       return new NextResponse("Unauthenticated!", { status: 401 });
     }
-
-    if (!validatedValue.success) {
-      return new NextResponse("Invalid title!", { status: 400 });
-    }
-
-    const values = validatedValue.data;
 
     const course = await db.course.update({
       where: {

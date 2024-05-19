@@ -1,21 +1,18 @@
 "use client";
 
-import Image from "next/image";
-import axios from "axios";
 import * as z from "zod";
+import axios from "axios";
+import Image from "next/image";
+import toast from "react-hot-toast";
 
-import { cn } from "@/lib/utils";
-import { useForm } from "react-hook-form";
-import { imageSchema } from "@/utils/validation";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { type Course } from "@prisma/client";
+import { imageSchema } from "@/utils/validation";
+import { FileUpload } from "@/components/file-upload";
 
-import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
-import { useState } from "react";
-import { FileUpload } from "@/components/file-upload";
 
 interface ImageFormProps {
   initialData: Course;
@@ -28,13 +25,6 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
 
   const toggleEdit = () => setIsEditting((prev) => !prev);
 
-  const form = useForm<z.infer<typeof imageSchema>>({
-    resolver: zodResolver(imageSchema),
-    defaultValues: {
-      imageUrl: initialData?.imageUrl || "",
-    },
-  });
-
   const onSubmit = async (value: z.infer<typeof imageSchema>) => {
     try {
       if (initialData.imageUrl) {
@@ -45,7 +35,7 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
 
       await axios.patch(`/api/courses/${courseId}`, value);
       toggleEdit();
-      toast.success("Course description updated.");
+      toast.success("Course image updated.");
       router.refresh();
     } catch (err: any) {
       toast.error(err.response.data || "Something went wrong!");
@@ -82,6 +72,7 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
           <div className="relative aspect-video mt-2">
             <Image
               fill
+              priority
               alt="upload"
               src={initialData.imageUrl}
               className="object-cover rounded-md"

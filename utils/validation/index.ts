@@ -17,3 +17,11 @@ export const imageSchema = z.object({
     message: "Image is required!",
   }),
 });
+
+export const categorySchema = z.object({
+  categoryId: z.string().min(1),
+});
+
+export const priceSchema = z.object({
+  price: z.coerce.number(),
+});

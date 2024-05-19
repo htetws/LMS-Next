@@ -5,7 +5,7 @@ import * as z from "zod";
 
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
-import { descriptionSchema } from "@/utils/validation";
+import { priceSchema } from "@/utils/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { type Course } from "@prisma/client";
@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
+import { formatPrice } from "@/lib/format";
 import {
   Form,
   FormControl,
@@ -21,34 +22,34 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 
-interface DescriptionFormProps {
+interface PriceFormProps {
   initialData: Course;
   courseId: string;
 }
 
-const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
+const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   const router = useRouter();
   const [isEditting, setIsEditting] = useState<boolean>(false);
 
   const toggleEdit = () => setIsEditting((prev) => !prev);
 
-  const form = useForm<z.infer<typeof descriptionSchema>>({
-    resolver: zodResolver(descriptionSchema),
+  const form = useForm<z.infer<typeof priceSchema>>({
+    resolver: zodResolver(priceSchema),
     defaultValues: {
-      description: initialData?.description || "",
+      price: initialData?.price || undefined,
     },
   });
 
   const { isSubmitting, isValid } = form.formState;
 
-  const onSubmit = async (value: z.infer<typeof descriptionSchema>) => {
+  const onSubmit = async (value: z.infer<typeof priceSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, value);
       toggleEdit();
       router.refresh();
-      toast.success("Course description updated.");
+      toast.success("Course price updated.");
     } catch (err: any) {
       toast.error(err.response.data || "Something went wrong!");
     }
@@ -57,14 +58,14 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   return (
     <div className="mt-6 border p-4 rounded-md bg-slate-100">
       <div className="font-medium flex items-center justify-between">
-        Course Description
+        Course price
         <Button onClick={toggleEdit} variant="ghost">
           {isEditting ? (
             <>Cancel</>
           ) : (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Edit description
+              Edit price
             </>
           )}
         </Button>
@@ -74,10 +75,10 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
         <p
           className={cn(
             "text-sm mt-2",
-            !initialData.description && "italic text-slate-500"
+            !initialData.price && "italic text-slate-500"
           )}
         >
-          {initialData.description || "No description"}
+          {initialData.price ? formatPrice(initialData.price) : "No price"}
         </p>
       )}
       {isEditting && (
@@ -87,15 +88,17 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
             className="space-y-4 mt-4"
           >
             <FormField
-              name="description"
+              name="price"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
+                    <Input
                       {...field}
+                      type="number"
+                      step="0.01"
                       disabled={isSubmitting}
-                      placeholder="e.g. 'This course is about...'"
+                      placeholder="Set a price for your course"
                     />
                   </FormControl>
                   <FormMessage />
@@ -114,4 +117,4 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   );
 };
 
-export default DescriptionForm;
+export default PriceForm;

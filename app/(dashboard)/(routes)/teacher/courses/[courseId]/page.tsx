@@ -7,8 +7,14 @@ import DescriptionForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseI
 import ImageForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/image-form";
 import CategoryForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/category-form";
 import PriceForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/price-form";
+import AttachmentForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/attachment-form";
 
-import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
+import {
+  CircleDollarSign,
+  File,
+  LayoutDashboard,
+  ListChecks,
+} from "lucide-react";
 import { IconBadge } from "@/components/icon-badge";
 interface ICourseId {
   params: { courseId: string };
@@ -23,6 +29,13 @@ const CourserIdPage = async ({ params }: ICourseId) => {
     where: {
       id: params.courseId,
       userId,
+    },
+    include: {
+      attachments: {
+        orderBy: {
+          name: "asc",
+        },
+      },
     },
   });
 
@@ -88,6 +101,14 @@ const CourserIdPage = async ({ params }: ICourseId) => {
               <h2 className="text-xl">Sell your course</h2>
             </div>
             <PriceForm initialData={course} courseId={course.id} />
+          </div>
+
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={File} />
+              <h2 className="text-xl">Resources & Attachments</h2>
+            </div>
+            <AttachmentForm initialData={course} courseId={course.id} />
           </div>
         </div>
       </div>

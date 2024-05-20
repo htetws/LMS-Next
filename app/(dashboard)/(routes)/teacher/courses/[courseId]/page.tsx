@@ -8,6 +8,7 @@ import ImageForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_co
 import CategoryForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/category-form";
 import PriceForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/price-form";
 import AttachmentForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/attachment-form";
+import ChapterForm from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/chapter-form";
 
 import {
   CircleDollarSign,
@@ -31,9 +32,14 @@ const CourserIdPage = async ({ params }: ICourseId) => {
       userId,
     },
     include: {
+      chapters: {
+        orderBy: {
+          position: "asc",
+        },
+      },
       attachments: {
         orderBy: {
-          name: "asc",
+          createdAt: "desc",
         },
       },
     },
@@ -92,7 +98,7 @@ const CourserIdPage = async ({ params }: ICourseId) => {
               <IconBadge icon={ListChecks} />
               <h2 className="text-xl">Course chapters</h2>
             </div>
-            <div>TODO: Chapters</div>
+            <ChapterForm initialData={course} courseId={course.id} />
           </div>
 
           <div>

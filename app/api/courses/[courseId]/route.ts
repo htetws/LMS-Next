@@ -1,5 +1,4 @@
 import { db } from "@/lib/db";
-import { titleSchema } from "@/utils/validation";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 

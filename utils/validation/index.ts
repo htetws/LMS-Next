@@ -29,3 +29,9 @@ export const priceSchema = z.object({
 export const attachmentSchema = z.object({
   url: z.string().min(1, { message: "Url is required!" }),
 });
+
+export const chapterSchema = z.object({
+  title: z.string().min(1, {
+    message: "Title is required!",
+  }),
+});

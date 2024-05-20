@@ -7,11 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed":"node scripts/seed.ts",
+    "seed": "node scripts/seed.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.0.12",
+    "@hello-pangea/dnd": "^16.6.0",
     "@hookform/resolvers": "^3.4.0",
     "@prisma/client": "^5.14.0",
     "@radix-ui/react-dialog": "^1.0.5",

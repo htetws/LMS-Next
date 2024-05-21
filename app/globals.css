@@ -80,3 +80,13 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+.ql-snow {
+  border-color: #036aa136 !important;
+}
+
+.ql-container {
+  font-size: 16px !important;
+}
+
+@import "~@uploadthing/react/styles.css";

@@ -59,7 +59,9 @@ const CourserIdPage = async ({ params }: ICourseId) => {
     course.imageUrl,
     course.price,
     course.categoryId,
+    course.chapters.some((chapter) => chapter.isPublished),
   ];
+
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
   const completedText = `${completedFields}/${totalFields}`;

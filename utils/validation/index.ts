@@ -35,3 +35,11 @@ export const chapterSchema = z.object({
     message: "Title is required!",
   }),
 });
+
+export const freeSchema = z.object({
+  isFree: z.boolean().default(false),
+});
+
+export const videoSchema = z.object({
+  videoUrl: z.string().min(1),
+});

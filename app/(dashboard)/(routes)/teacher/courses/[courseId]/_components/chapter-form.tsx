@@ -12,7 +12,7 @@ import { type Chapter, Course } from "@prisma/client";
 
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { PlusCircle } from "lucide-react";
+import { Loader2, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ChapterLists from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/chapter-list";
 
@@ -58,8 +58,32 @@ const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
     }
   };
 
+  const onReorder = async (updatedData: { id: string; position: number }[]) => {
+    try {
+      setIsUpdating(true);
+      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
+        lists: updatedData,
+      });
+      toast.success("Reordered.");
+    } catch (err: any) {
+      toast.error(err.response.data || "Something went wrong!");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const onEdit = async (id: string) => {
+    router.push(`/teacher/courses/${courseId}/chapters/${id}`);
+  };
+
   return (
-    <div className="mt-6 border p-4 rounded-md bg-slate-100">
+    <div className="mt-6 border p-4 rounded-md bg-slate-100 relative">
+      {isUpdating && (
+        <div className="absolute cursor-wait bg-slate-500/20 inset-0 rounded-md flex justify-center items-center">
+          <Loader2 className="h-6 w-6 text-sky-700 animate-spin" />
+        </div>
+      )}
+
       <div className="font-medium flex items-center justify-between">
         Course chapter
         <Button onClick={toggleCreate} variant="ghost">
@@ -114,8 +138,8 @@ const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
           {!initialData.chapters.length && "No chapters"}
           {/** todo : list of chapter */}
           <ChapterLists
-            onEdit={() => {}}
-            onReorder={() => {}}
+            onEdit={onEdit}
+            onReorder={onReorder}
             items={initialData.chapters || []}
           />
         </div>

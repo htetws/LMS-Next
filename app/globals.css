@@ -90,3 +90,10 @@ body,
 }
 
 @import "~@uploadthing/react/styles.css";
+
+@import "@vidstack/react/player/styles/base.css";
+@import "@vidstack/react/player/styles/plyr/theme.css";
+
+.plyrLayout {
+  border-radius: 0 !important; /* This removes the border radius */
+}

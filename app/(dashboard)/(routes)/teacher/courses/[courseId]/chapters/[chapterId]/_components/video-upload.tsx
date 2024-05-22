@@ -2,20 +2,21 @@
 
 import * as z from "zod";
 import axios from "axios";
-import Image from "next/image";
 import toast from "react-hot-toast";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { type Chapter } from "@prisma/client";
+import { type muxData, Chapter } from "@prisma/client";
 import { videoSchema } from "@/utils/validation";
 import { FileUpload } from "@/components/file-upload";
+
+import MuxPlayer from "@mux/mux-player-react";
 
 import { Button } from "@/components/ui/button";
 import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
 
 interface VideoFormProps {
-  initialData: Chapter;
+  initialData: Chapter & { muxDatas: muxData | null };
   courseId: string;
   chapterId: string;
 }
@@ -74,11 +75,7 @@ const VideoForm = ({ initialData, courseId, chapterId }: VideoFormProps) => {
           </div>
         ) : (
           <div className="relative aspect-video mt-2">
-            <video
-              src={initialData.videoUrl}
-              className="w-full h-full"
-              controls
-            />
+            <MuxPlayer playbackId={initialData.muxDatas?.playbackId || ""} />
           </div>
         ))}
       {isEditting && (

@@ -1,5 +1,4 @@
 "use client";
-
 import axios from "axios";
 import * as z from "zod";
 
@@ -21,7 +20,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
+
 import Editor from "@/components/editor";
 import Preview from "@/components/preview";
 

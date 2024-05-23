@@ -28,10 +28,7 @@ export async function PUT(req: Request, { params }: IParams) {
 
     for (const list of lists) {
       const { id, position } = list;
-      await db.chapter.update({
-        where: { id },
-        data: { position },
-      });
+      await db.chapter.update({ where: { id }, data: { position } });
     }
 
     return NextResponse.json({ status: 200 });

@@ -76,3 +76,42 @@ export async function PATCH(
     return new NextResponse("Internal error!", { status: 500 });
   }
 }
+
+export const DELETE = async (req: Request, { params }: ChapterProps) => {
+  try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: "Unauthenticated!" },
+        { status: 401 }
+      );
+    }
+
+    const { courseId, chapterId } = params;
+
+    const isChapterOwner = await db.chapter.findUnique({
+      where: { id: chapterId, courseId, course: { userId } },
+      include: {
+        muxDatas: true,
+      },
+    });
+
+    if (!isChapterOwner) {
+      return NextResponse.json({ message: "Unauthorized!" }, { status: 401 });
+    }
+
+    if (isChapterOwner.videoUrl) {
+      await video.assets.delete(isChapterOwner.muxDatas?.assetId!);
+    }
+
+    await db.chapter.delete({ where: { id: isChapterOwner.id } });
+
+    //Todo : if there is no atleast chapter that in not published . So , we need to unpublish the course again !
+
+    return NextResponse.json({ status: 200 });
+  } catch (err) {
+    console.error("CHAPTER-DELETE", err);
+    return NextResponse.json({ message: "Internal error!" }, { status: 500 });
+  }
+};

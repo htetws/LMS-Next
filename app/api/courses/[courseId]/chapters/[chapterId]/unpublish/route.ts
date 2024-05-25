@@ -31,6 +31,17 @@ export const PATCH = async (
       data: { isPublished: false },
     });
 
+    const hasPublishedChapter = await db.chapter.findMany({
+      where: { courseId, isPublished: true },
+    });
+
+    if (!hasPublishedChapter.length) {
+      await db.course.update({
+        where: { id: courseId },
+        data: { isPublished: false },
+      });
+    }
+
     return NextResponse.json({ message: "success" }, { status: 200 });
   } catch (error) {
     console.error("[CHAPTER-PUBLISH]", error);

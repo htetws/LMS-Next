@@ -75,28 +75,34 @@ export async function DELETE(
 
     if (isCourse.chapters.length) {
       for (const { videoUrl, muxDatas } of isCourse.chapters) {
-        const url = videoUrl?.substring(videoUrl.lastIndexOf("/") + 1);
+        if (videoUrl && muxDatas) {
+          const url = videoUrl?.substring(videoUrl.lastIndexOf("/") + 1);
 
-        //remove : uploadthing
-        await utapi.deleteFiles(url!);
+          //remove : uploadthing
+          await utapi.deleteFiles(url!);
 
-        //remove : Mux
-        await video.assets.delete(muxDatas?.assetId!);
+          //remove : Mux
+          await video.assets.delete(muxDatas?.assetId!);
+        }
       }
     }
 
     const { imageUrl, ...rest } = isCourse;
 
-    const courseImageUrl = imageUrl?.substring(imageUrl.lastIndexOf("/") + 1); //rm course image
-    utapi.deleteFiles(courseImageUrl!);
+    if (imageUrl) {
+      const courseImageUrl = imageUrl?.substring(imageUrl.lastIndexOf("/") + 1); //rm course image
+      utapi.deleteFiles(courseImageUrl!);
+    }
 
     if (rest.attachments.length) {
       for (const attachement of rest.attachments) {
-        const attchUrl = attachement.url.substring(
-          attachement.url.lastIndexOf("/") + 1
-        );
+        if (attachement) {
+          const attchUrl = attachement.url.substring(
+            attachement.url.lastIndexOf("/") + 1
+          );
 
-        await utapi.deleteFiles(attchUrl);
+          await utapi.deleteFiles(attchUrl);
+        }
       }
     }
 

@@ -10,11 +10,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { type Chapter, Course } from "@prisma/client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { Loader2, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ChapterLists from "@/app/(dashboard)/(routes)/teacher/courses/[courseId]/_components/chapter-list";
 
 import {
   Form,
@@ -24,6 +23,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ChapterFormProps {
   initialData: Course & { chapters: Chapter[] };
@@ -49,10 +50,10 @@ const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
   const onSubmit = async (value: z.infer<typeof chapterSchema>) => {
     try {
       await axios.post(`/api/courses/${courseId}/chapters`, value);
-      toggleCreate();
       form.reset();
-      router.refresh();
+      toggleCreate();
       toast.success("Chapter uploaded.");
+      router.refresh();
     } catch (err: any) {
       toast.error(err.response.data || "Something went wrong!");
     }
@@ -75,6 +76,25 @@ const ChapterForm = ({ initialData, courseId }: ChapterFormProps) => {
   const onEdit = async (id: string) => {
     router.push(`/teacher/courses/${courseId}/chapters/${id}`);
   };
+
+  const ChapterLists = useMemo(
+    () =>
+      dynamic(() => import("./chapter-list"), {
+        ssr: false,
+        loading: () => (
+          <div className="space-y-4">
+            {initialData.chapters.map((chapter) => (
+              <Skeleton
+                key={chapter.id}
+                className="w-full h-[48px] bg-slate-200"
+              />
+            ))}
+          </div>
+        ),
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [initialData.chapters.length]
+  );
 
   return (
     <div className="mt-6 border p-4 rounded-md bg-slate-100 relative">

@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
+import SearchInput from "./search-input";
 
 const NavbarRoutes = () => {
   const pathname = usePathname();
@@ -12,35 +13,44 @@ const NavbarRoutes = () => {
 
   const isTeacherPage = pathname?.startsWith("/teacher");
   const isPlayerPage = pathname?.includes("/chapter");
+  const isSearchPage = pathname === "/search";
 
   return (
-    <div className="ml-auto flex gap-x-2">
-      {isTeacherPage || isPlayerPage ? (
-        <Button size="sm" variant="ghost" asChild>
-          <Link href="/">
-            <LogOut className="h-4 w-4 mr-2" />
-            Exit
-          </Link>
-        </Button>
-      ) : (
-        <Link
-          href="/teacher/courses"
-          className={buttonVariants({
-            variant: "ghost",
-            size: "sm",
-          })}
-        >
-          Teacher mode
-        </Link>
+    <>
+      {isSearchPage && (
+        <div className="hidden md:block">
+          <SearchInput />
+        </div>
       )}
 
-      <ClerkLoading>
-        <div className="bg-slate-200 w-7 h-7 rounded-full" />
-      </ClerkLoading>
-      <ClerkLoaded>
-        <UserButton />
-      </ClerkLoaded>
-    </div>
+      <div className="ml-auto flex gap-x-2">
+        {isTeacherPage || isPlayerPage ? (
+          <Button size="sm" variant="ghost" asChild>
+            <Link href="/">
+              <LogOut className="h-4 w-4 mr-2" />
+              Exit
+            </Link>
+          </Button>
+        ) : (
+          <Link
+            href="/teacher/courses"
+            className={buttonVariants({
+              variant: "ghost",
+              size: "sm",
+            })}
+          >
+            Teacher mode
+          </Link>
+        )}
+
+        <ClerkLoading>
+          <div className="bg-slate-200 w-7 h-7 rounded-full" />
+        </ClerkLoading>
+        <ClerkLoaded>
+          <UserButton />
+        </ClerkLoaded>
+      </div>
+    </>
   );
 };
 

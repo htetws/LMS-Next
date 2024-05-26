@@ -37,6 +37,7 @@ const Create = () => {
       const response = await axios.post("/api/courses", values);
       router.push(`/teacher/courses/${response.data.id}`);
       toast.success("Course created.");
+      router.refresh();
     } catch (err: any) {
       toast.error(err.response.data || "Something went wrong!");
     }
@@ -78,7 +79,7 @@ const Create = () => {
 
             <div className="flex items-center gap-x-2">
               <Button variant="ghost" type="button" asChild>
-                <Link href="/">Cancel</Link>
+                <Link href="/teacher/courses">Cancel</Link>
               </Button>
               <Button type="submit" disabled={isSubmitting || !isValid}>
                 Submit

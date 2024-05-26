@@ -49,7 +49,7 @@ const CourseActions: FC<CourseActionsProps> = ({
       await axios.delete(`/api/courses/${courseId}`);
       toast.success("Chapter deleted.");
       router.refresh();
-      router.push(`/`);
+      router.push(`/teacher/courses`);
     } catch (err: any) {
       console.log(err);
 

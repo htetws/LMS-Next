@@ -1,4 +1,5 @@
 "use client";
+
 import { courseWithProgressWithCategory } from "@/actions/get-courses";
 import CourseCard from "./course-card";
 
@@ -17,7 +18,7 @@ const CoursesList = ({ items }: ICoursesList) => {
       <div>
         {!items.length && (
           <div className="text-center text-muted-foreground text-sm mt-10">
-            No courses found
+            No courses found.
           </div>
         )}
       </div>

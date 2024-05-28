@@ -12,17 +12,10 @@ interface ISearchParams {
 
 const Browse: React.FC<ISearchParams> = async ({ searchParams }) => {
   const { userId } = auth();
-
-  const categories = await db.category.findMany({
-    orderBy: { name: "asc" },
-  });
-
   if (!userId) return redirect("/");
 
-  const courses = await getCourses({
-    userId,
-    ...searchParams,
-  });
+  const categories = await db.category.findMany({ orderBy: { name: "asc" } });
+  const courses = await getCourses({ userId, ...searchParams });
 
   return (
     <>

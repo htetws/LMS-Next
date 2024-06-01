@@ -6,6 +6,7 @@ import Link from "next/link";
 import { IconBadge } from "./icon-badge";
 import { BookOpen } from "lucide-react";
 import { formatPrice } from "@/lib/format";
+import CourseProgress from "./course-progress";
 
 const CourseCard = ({ item }: { item: courseWithProgressWithCategory }) => {
   return (
@@ -24,13 +25,17 @@ const CourseCard = ({ item }: { item: courseWithProgressWithCategory }) => {
               <IconBadge icon={BookOpen} size="sm" />
               <span>
                 {item.chapters.length}
-                {item.chapters.length ? " Chapter" : " Chapters"}
+                {item.chapters.length ? " Chapters" : " Chapter"}
               </span>
             </div>
           </div>
         </div>
-        {item.progress ? (
-          <div></div>
+        {item.progress !== null ? (
+          <CourseProgress
+            size="sm"
+            value={item.progress}
+            variant={item.progress === 100 ? "success" : "default"}
+          />
         ) : (
           <p className="text-md md:text-sm font-medium text-slate-700">
             {formatPrice(item.price || 0)}
